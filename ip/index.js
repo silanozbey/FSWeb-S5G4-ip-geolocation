@@ -1,6 +1,6 @@
 //axios import buraya gelecek
-
-var benimIP;
+import axios from "axios";
+var benimIP="31.223.84.106";
 
 
 // ------------ değiştirmeyin --------------
@@ -31,6 +31,17 @@ async function ipAdresimiAl(){
 	ADIM 5'e gelene kadar fonksiyonunuzu test etmek için ip nizi URL'ye manuel olarak ekleyebilirsiniz.
 */
 
+const getData=async function () {
+	await ipAdresimiAl();
+	axios.get("https://apis.ergineer.com/ipgeoapi/"+benimIP)
+	.then (function(response){
+		return (response.data);
+	})
+	.then (function(ipDatasi){
+		document.querySelector("div.cards").appendChild(cardOlustur(ipDatasi));
+	})
+}
+getData();
 /*
 	ADIM 2: Geri döndürülen verileri inceleyin, bu sizin ip bilgileriniz! Bileşen fonksiyonunuzu geliştirmek içindeki bu veri yapısını
 	iyice anlamanız gerekmektedir.
@@ -53,11 +64,50 @@ async function ipAdresimiAl(){
 	</div>
     </div>
 */
+function cardOlustur(veri){
+	const _div=document.createElement("div");
+	_div.classList.add("card");
 
+	const imgCard=document.createElement("img");
+	const cardInfo=document.createElement("div");
+	const h3Ip=document.createElement("h3");
+	const pUlke=document.createElement("p");
+	const pEnlem=document.createElement("p");
+	const pSehir=document.createElement("p");
+	const pSaat=document.createElement("p");
+	const pPara=document.createElement("p");
+	const pISP=document.createElement("p");
+	
+	imgCard.src=veri["ülkebayrağı"];
+	cardInfo.classList.add("card-info")
+	h3Ip.classList.add("ip");
+	h3Ip.textContent=veri["sorgu"];
+	pUlke.classList.add("ülke");
+	pUlke.textContent=veri["ülke"]+" "+ "(" +veri["ülkeKodu"]+")";
+	pEnlem.textContent="Enlem: " + veri["enlem"] +" "+ "Boylam: "+veri["boylam"];
+	pSehir.textContent="Şehir: "+veri["şehir"];
+	pSaat.textContent="Saat: "+veri["saatdilimi"];
+	pPara.textContent="Para birimi: "+veri["parabirimi"];
+	pISP.textContent="ISP: "+veri["isp"];
+
+	_div.appendChild(imgCard);
+	cardInfo.appendChild(h3Ip);
+	cardInfo.appendChild(pUlke);
+	cardInfo.appendChild(pEnlem);
+	cardInfo.appendChild(pSehir);
+	cardInfo.appendChild(pSaat);
+	cardInfo.appendChild(pPara);
+	cardInfo.appendChild(pISP);
+
+	_div.appendChild(cardInfo);
+	
+	return _div;
+}
 /*
 	ADIM 4: API'den alınan verileri kullanarak ADIM 3'te verilen yapıda bir kart oluşturun ve 
 	bu kartı DOM olarak .cards elementinin içine ekleyin. 
 */
+
 
 /*
 	ADIM 5: Manuel olarak eklediğiniz IP adresini dinamiğe dönüştürün. 
